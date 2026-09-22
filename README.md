@@ -22,6 +22,25 @@ The simulation also visualises the model’s confidence as priority bars and dis
 - Supports extreme weather and temperature adjustments.
 
 ---
+## Simulation Logic
+
+- Cars spawn at the bottom, accelerate to a random speed (11–17 m/s by default), and move upward when the light allows. They decelerate if they approach another car or if the light is red/yellow.
+- Pedestrians spawn on the left or right side and move horizontally. They cross when the car light is red (or when no cars are in the traffic region). They stop if the car light is green and they are near the crossing.
+- Traffic Light starts red. Every 15 seconds, if movement is enabled, the program calls the AI model with the current state. The model returns a value between 0 and 1, interpreted as the probability that people should go first. If the result is ≥ 0.5, the light turns red (people first); otherwise, it turns green (cars first). The light only changes if the corresponding traffic region (cars or people) is clear.
+- Traffic Region: A rectangular area around the light used to prevent switching while vehicles or pedestrians are still crossing.
+
+## File Descriptions
+
+| File | Description |
+|------|-------------|
+| `app_2.py` | Main program: initialises Pygame, loads model and data, runs the main loop, handles input, and controls the traffic light via AI. |
+| `constants.py` | Global constants: screen size, colours, speeds, acceleration, pixel-to-metre conversion, light timings, etc. |
+| `car.py` | `Car` class: speed, acceleration, deceleration, movement, distance calculation, and drawing. |
+| `person.py` | `Person` class: pedestrian movement and drawing. |
+| `road.py` | `Road` class: manages cars, people, traffic lights, spawning, updating, drawing, and priority logic. |
+| `interactions.py` | `TrafficLight` and `TrafficLightStatus` classes. Defines light colours and deceleration behaviour. |
+| `ratioAI.pkl` | Pickled XGBoost regressor model. Input features: `[distance, first_speed, extreme_weather, temperature, num_waiting_cars, num_waiting_people]`. Output: a float used as people-first probability. |
+| `data.pkl` | Pickled dataset with arrays for distance, first speed, extreme weather, temperature, waiting cars, waiting people, and expected `people_first` result. |
 
 ## Controls
 
